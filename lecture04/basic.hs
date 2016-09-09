@@ -39,9 +39,14 @@ find' k t = [v | (k', v) <- t, k == k']
 -- [('a', 1), ('b', 2), ('c', 3)]
 
 -- | 定义一个函数pair，返回一个列表中相邻元素所组成的二元元组
-pairs :: [a] -> [(a, a)]
-pairs xs = zip xs (tail xs)
+pairs' :: [a] -> [(a, a)]
+pairs' xs = zip xs (tail xs)
 
 -- | 判定一个列表是否已排好序的函数，需要检查任意相邻的元素是不是升序的即可
-sorted :: Ord a => [a] -> Bool
-sorted xs = [x <= y | (x, y) <- pairs xs]
+sorted' :: Ord a => [a] -> Bool
+sorted' xs = and [x <= y | (x, y) <- pairs' xs]
+
+-- | 通过把元素与其所在位置配对，选择出想要的元素的位置
+positions :: Eq a => a -> [a] -> [Int]
+positions x xs = [i | (x', i) <- zip xs [0..n], x == x']
+									where n = length xs - 1
