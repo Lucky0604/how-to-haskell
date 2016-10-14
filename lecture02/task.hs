@@ -1,3 +1,4 @@
+{-
 -- check the type about the value
 ['a', 'b', 'c']
 -- ['a', 'b', 'c'] :: [Char]
@@ -9,6 +10,10 @@
 -- ([False, True], ['0', '1']) :: ([Bool], [Char])
 [tail, init, reverse]
 -- [tail, init, reverse] :: [[a] -> [a]]
+	
+-}
+
+
 
 
 -- check the type about the function
@@ -24,3 +29,9 @@ palindrome xs = reverse xs == xs
 -- palindrome :: Eq a => [a] -> Bool
 twice f x = f (f x)
 -- twice :: (t -> t) -> t -> t
+
+-- Write a function lastButOne, that returns the element before the last
+lastButOne :: [a] -> a
+lastButOne xs = if (length xs) <= 2
+	then head xs
+	else lastButOne (tail xs)
