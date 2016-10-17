@@ -8,8 +8,41 @@ data BetterReview = BetterReview BookInfo CustomerID ReviewBody
 
 type BookRecord = (BookInfo, BetterReview)
 
+-- | Algebraic data types
+type CardHolder = String
+type CardNumber = String
+type Address = [String]
+
+data BillingInfo = CreditCard CardNumber CardHolder Address
+                 | CashOnDelivery
+                 | Invoice CustomerID
+                   deriving (Show)
 
 -- | pattern match on an algebraic data type using its value constructors
 bookID (Book id title authors) = id
 bookTitle (Book id title authors) = title
 bookAuthors (Book id title authors) = authors
+
+-- | wild card pattern
+nicerID (Book id _ _) = id
+nicerTitle (Book _ title _) = title
+nicerAuthors (Book _ _ authors) = authors
+
+-- | Record syntax
+-- | define a data type, and accessors for each of its components, simultaneously
+data Customer = Customer {
+  customerID :: CustomerID,
+  customerName :: String,
+  customerAddress :: Address
+} deriving (Show)
+
+-- |  usual application syntax to create a value of this type
+customer1 = Customer 271818 "J.R. Hacker"
+            ["285 Syntax Ct", "USA"]
+
+-- | Record syntax adds a more verbose notation for creating a value
+customer2 = Customer {
+  customerID = 271818,
+  customerAddress = ["1014414 Disk Drive", "USA"],
+  customerName = "Jane Q. Citizen"
+}
