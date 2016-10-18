@@ -11,3 +11,11 @@ lend mount balance = let reverse = 100
                      in if balance < reverse
                            then Nothing
                            else Just newBalance
+
+
+-- | a similar function to lend, using where instead of let
+lend2 mount balance = if mount < reverse * 0.5
+                         then Just newBalance
+                         else Nothing
+  where reverse = 100
+        newBalance = balance - mount
