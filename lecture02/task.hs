@@ -35,3 +35,8 @@ lastButOne :: [a] -> a
 lastButOne xs = if (length xs) <= 2
 	then head xs
 	else lastButOne (tail xs)
+
+-- | Write a function that computes the number of elements in a list. To test it, ensure that it gives the same answers as the standard length function
+length' [] = 0
+length' [x] = 1
+length' (x: xs) = 1 + length' xs

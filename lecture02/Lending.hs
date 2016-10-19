@@ -19,3 +19,11 @@ lend2 mount balance = if mount < reverse * 0.5
                          else Nothing
   where reverse = 100
         newBalance = balance - mount
+
+-- | reworked version of lend function that uses guards
+lend3 mount balance
+    | mount <= 0 = Nothing
+    | mount > reverse * 0.5 = Nothing
+    | otherwise = Just newBalance
+    where reverse = 100
+          newBalance = balance - mount
