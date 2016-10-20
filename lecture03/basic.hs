@@ -76,11 +76,11 @@ filterList p (C x xs)
 
 -- | mapList
 -- | general
-mapList :: (t -> t) -> List t -> List t
+-- mapList :: (t -> t) -> List t -> List t
 -- | it means that when applying mapList, we always get a list with the same type of elements as the list we started with.
 
 -- | better
-mapList :: (a -> b) -> List a -> List b
-mapList _ E = E
-mapList f (C x xs) = C (f x) (mapList f xs)
+mapList' :: (a -> b) -> List a -> List b
+mapList' _ E = E
+mapList' f (C x xs) = C (f x) (mapList' f xs)
 -- | polymorphic functions is that the caller gets to pick the types. When you write a polymorphic function, it must work for every possible input type
