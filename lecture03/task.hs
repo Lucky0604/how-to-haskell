@@ -1,3 +1,6 @@
+module Golf where
+import Data.List
+
 -- slice a list
 -- halve :: [a] -> ([a], [a])
 
@@ -71,3 +74,52 @@ localMaxima (x:y:z:zs)
   | x < y && y > z = y : localMaxima(y: z: zs)
   | otherwise = localMaxima (y: z: zs)
 localMaxima _ = []
+
+-- | complicated
+localMaxima' :: [Integer] -> [Integer]
+localMaxima' =
+  map (!! 1) . filter isLocalMax . conses 3
+  where
+    conses n xs
+      | length xs <= n = [xs]
+      | otherwise = take n xs : conses n (tail xs)
+    isLocalMax [a, b, c] = b > a && b > c
+    isLocalMax _ = False
+
+
+-- | histogram
+{-
+takes a input list of Integers in [0,9] and outputs a vertical histogram
+showing how many of each number were in the input list.
+
+-- histogram [1,1,1,5] ==
+-- >  *
+-- >  *
+-- >  * *
+-- > ==========
+-- > 0123456789
+-}
+-- | use putStr (histogram [3,5]) to show this output in ghci
+histogram :: [Integer] -> String
+histogram xs = unlines (map (line c) [m + 1, m..1]) ++ "==========\n0123456789\n"
+  where
+    c = count xs
+    m = maximum c
+
+-- | return one * line from the above function
+line :: [Int] -> Int -> String
+line xs n = [if i >= n then '*' else ' ' | i <- xs]
+
+-- | counts occurence of numbers in [0..9] in the input list
+count :: [Integer] -> [Int]
+count xs = map (\n -> length $ filter (== n) xs) [0..9]
+
+
+-- | complicated version
+histo :: Int -> (Int, Int) -> String
+histo m (i, n) = show i ++ "=" ++ replicate n '*' ++ replicate (m - n) ' '
+
+histogram' :: [Integer] -> String
+histogram' xs = let c = map (\n -> length $ filter (== n) xs) [0..9]
+                    m = maximum c in
+                  unlines $ reverse $ transpose $ map (histo m) $ zip [0..9] c
