@@ -57,3 +57,31 @@ chain n
 numLongChains :: Int
 numLongChains = length (filter isLong (map chain [1..10]))
 	where isLong xs = length xs > 15
+
+{-
+Lambdas
+
+-- >  To make a lambda, we write a \ (because it kind of looks like
+ the greek letter lambda if you squint hard enough) and 
+ then we write the parameters, separated by spaces. 
+ After that comes a -> and then the function body. 
+ We usually surround them by parentheses, 
+ because otherwise they extend all the way to the right.
+-}
+
+-- | rewrite numLongChains using lambda
+numLongChains' :: Int
+numLongChains' = length (filter (\xs -> length xs > 15) (map chain [1..100]))
+
+-- | Lambdas are normally surrounded by parentheses unless we mean for them to extend all the way to the right
+-- | due to the way functions are curried by default, these two are equivalent:
+addThree :: (Num a) => a -> a -> a -> a
+addThree x y z =  x + y + z
+
+addThree' :: (Num a) => a -> a -> a -> a
+addThree' = \x -> \y -> \z -> x + y + z
+
+
+-- | define flip func using lambda
+flip''' :: (a -> b -> c) -> b -> a -> c
+flip''' f = \x y -> f y x
