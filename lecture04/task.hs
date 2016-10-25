@@ -60,3 +60,37 @@ fun2' = sum . filter even . takeWhile (/= 1) . iterate (\n -> if even n then n `
 task 2
 Folding with trees
 -}
+{-
+ one sample output might be the following
+foldTree "ABCDEFGHIJ" ==
+	Node 3
+		(Node 2
+		(Node 0 Leaf ’F’ Leaf)
+		’I’
+		(Node 1 (Node 0 Leaf ’B’ Leaf) ’C’ Leaf))
+	’J’
+		(Node 2
+		(Node 1 (Node 0 Leaf ’A’ Leaf) ’G’ Leaf)
+		’H’
+		(Node 1 (Node 0 Leaf ’D’ Leaf) ’E’ Leaf))
+-}
+data Tree a = Leaf
+						| Node Integer (Tree a) a (Tree a)
+	deriving (Show, Eq)
+
+foldTree :: [a] -> Tree a
+foldTree = foldr insertNode Leaf
+
+insertNode :: a -> Tree a -> Tree a
+insertNode x Leaf = Node 0 Leaf x Leaf
+insertNode x (Node h ln y rn)
+	| treeHeight ln < treeHeight rn =
+		let nn = insertNode x ln
+		ln Node (treeHeight nn + 1) nn y rn
+	| otherwise =
+		let nn = insertNode x rn
+		in Node (treeHeight nn + 1) ln y nn
+
+treeHeight :: Tree a -> Integer
+treeHeight Leaf = -1
+treeHeight (Node h _ _ _) = h
