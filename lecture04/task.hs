@@ -1,3 +1,4 @@
+module Task where
 -- | 在ide中运行代码可以添加main函数用以执行
 
 {-
@@ -86,7 +87,7 @@ insertNode x Leaf = Node 0 Leaf x Leaf
 insertNode x (Node h ln y rn)
 	| treeHeight ln < treeHeight rn =
 		let nn = insertNode x ln
-		ln Node (treeHeight nn + 1) nn y rn
+		in Node (treeHeight nn + 1) nn y rn
 	| otherwise =
 		let nn = insertNode x rn
 		in Node (treeHeight nn + 1) ln y nn
@@ -94,3 +95,63 @@ insertNode x (Node h ln y rn)
 treeHeight :: Tree a -> Integer
 treeHeight Leaf = -1
 treeHeight (Node h _ _ _) = h
+
+
+{-
+Implement a function
+xor :: [Bool] -> Bool
+which returns True if and only if there are an odd number of True
+values contained in the input list. It does not matter how many
+False values the input list contains. For example,
+xor [False, True, False] == True
+xor [False, True, False, False, True] == False
+Your solution must be implemented using a fold
+-}
+xor :: [Bool] -> Bool
+xor = foldr xor' False
+			where
+				xor' True True = False
+				xor' False False = False
+				xor' _ _ = True
+
+xor' :: [Bool] -> Bool
+xor' = odd . length . filter id
+
+xor'' :: [Bool] -> Bool
+xor'' = foldr (\x y -> (not x && y) || (x && not y)) False
+
+xor''' :: [Bool] -> Bool
+xor''' = foldr xor2 False
+
+xor2 :: Bool -> Bool -> Bool
+xor2 a b = (a || b) && not (a && b)
+
+{-
+Implement map as a fold. That is, complete the definition
+map’ :: (a -> b) -> [a] -> [b]
+map’ f = foldr ...
+in such a way that map’ behaves identically to the standard map
+function.
+-}
+map' :: (a -> b) -> [a] -> [b]
+map' f = foldr (\x y -> f x : y) []
+
+map'' :: (a -> b) -> [a] -> [b]
+map'' f = foldr g []
+  	where
+  		g x acc = f x : acc
+
+{-
+Implement foldl using foldr. That is, complete the
+definition
+myFoldl :: (a -> b -> a) -> a -> [b] -> a
+myFoldl f base xs = foldr ...
+in such a way that myFoldl behaves identically to the standard
+foldl function.
+-}
+myFoldl :: (a -> b -> a) -> a -> [b] -> a
+myFoldl f base xs = foldr (flip f) base (reverse xs)
+
+-- | use `id`
+myFoldl' :: (a -> b -> a) -> a -> [b] -> a
+myFoldl' f base xs = foldr (\b g x = g (f x b)) id xs base
