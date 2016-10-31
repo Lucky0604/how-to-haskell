@@ -1,7 +1,5 @@
 module Monoid_Basic where
 
-import Data.Monoid
-
 {-
 A monoid is when you have an associative binary function 
 and a value which acts as an identity with respect to that function. 
@@ -40,3 +38,44 @@ instance Monoid [a] where
 notice : 
 wrote instance Monoid [a] and not instance Monoid [], because Monoid requires a concrete type for an instance.
 -}
+
+
+-- | Product and Sum
+newtype Product a = Product {getProduct :: a}
+	deriving (Eq, Ord, Read, Show, Bounded)
+
+-- | just a newtype wrapper with one type parameter along with some derived instances. Its instance for Monoid goes a little something like this:
+instance Num a => Monoid (Product a) where
+	mempty = Product 1
+	Product x `mappend` Product y = Product (x * y)
+-- | Sum is the same as Product
+
+
+-- | Any and All
+newtype Any = Any { getAny :: Bool } deriving (Eq, Show, Ord, Read, Bounded)
+
+-- | the Any's instance looks like
+instance Monoid Any where
+	mempty = Any False
+	Any x `mappend` Any y = Any (x || y)
+
+newtype All = All { getAll :: Bool } deriving (Eq, Show, Ord, Read, Bounded)
+
+-- | the instance looks like this
+instance Monoid All where
+	mempty = All True
+	All x `mappend` All x = All (x && y)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
