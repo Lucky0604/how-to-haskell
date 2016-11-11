@@ -34,11 +34,12 @@ main = do
 We talked about how doing contents <- hGetContents handle doesn't cause the whole file
 to be read at once and stored in-memory. It's I/O lazy, so doing this
 -}
+{-
 main = do
   withFile "something.txt" ReadMode (\handle -> do
                                         contents <- hGetContents handle
                                         putStr contents)
-
+-}
 
 
 -- | control exactly buffering
@@ -53,8 +54,37 @@ NoBuffering means that it will be read one character at a time.
 NoBuffering usually sucks as a buffering mode because it has to access the disk so much.
 -}
 -- |  it doesn't read it line by line but reads the whole file in chunks of 2048 bytes
+{-
 main = do
   withFile "something.txt" ReadMode (\handle -> do
                                         hSetBuffering handle $ BlockBuffering (Just 2048)
                                         contents <- hGetContents handle
                                         putStr contents)
+-}
+
+
+-- | -----------------------------------------------------------------
+{-
+the program for removing an item from todo.txt:
+-}
+import System.IO
+import System.Directory
+import Data.List
+
+main = do
+  handle <- openFile "todo.txt" ReadMode
+  (tempName, tempHandle) <- openTempFile "." "temp"
+  contents <- hGetContents handle
+  let todoTasks = lines contents
+      numberedTasks = zipWith (\n line -> show n ++ " - " ++ line) [0..] todoTasks
+  putStrLn "These are your TO-DO items:"
+  putStr $ unlines numberedTasks
+  putStrLn "Which one do you want to delete?"
+  numberString <- getLine
+  let number = read numberString
+      newTodoItems = delete (todoTasks !! number) todoTasks
+  hPutStr tempHandle $ unlines newTodoItems
+  hClose handle
+  hClose tempHandle
+  removeFile "todo.txt"
+  renameFile tempName "todo.txt"
