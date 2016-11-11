@@ -24,3 +24,12 @@ main = do
   withFile "girlfriends.txt" ReadMode (\handle -> do
                                           contents <- hGetContents handle
                                           putStr contents)
+
+{-
+it has to take a function that returns an I/O action instead
+of just taking an I/O action to do and then close the file is
+because the I/O action that we'd pass to it wouldn't know on which file to operate.
+This way, withFile opens the file and then passes the handle to the function we gave it.
+It gets an I/O action back from that function and then makes an I/O action that's just like it,
+only it closes the file afterwards
+-}

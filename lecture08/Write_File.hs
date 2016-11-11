@@ -39,3 +39,22 @@ main = do
                                         contents <- hGetContents handle
                                         putStr contents)
 
+
+
+-- | control exactly buffering
+{-
+control how exactly buffering is done by using the hSetBuffering function.
+It takes a handle and a BufferMode and returns an I/O action that sets the buffering.
+BufferMode is a simple enumeration data type and the possible values it can hold are:
+NoBuffering, LineBuffering or BlockBuffering (Maybe Int).
+The Maybe Int is for how big the chunk should be, in bytes.
+If it's Nothing, then the operating system determines the chunk size.
+NoBuffering means that it will be read one character at a time.
+NoBuffering usually sucks as a buffering mode because it has to access the disk so much.
+-}
+-- |  it doesn't read it line by line but reads the whole file in chunks of 2048 bytes
+main = do
+  withFile "something.txt" ReadMode (\handle -> do
+                                        hSetBuffering handle $ BlockBuffering (Just 2048)
+                                        contents <- hGetContents handle
+                                        putStr contents)
