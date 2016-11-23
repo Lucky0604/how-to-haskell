@@ -86,4 +86,35 @@ instance Applicative ((->) r) where
   pure x = (\_ -> x)
   f <*> g = \x -> f x (g x)
 
+-- | instance of `Applicative` --> ZipList
+instance Applicative ZipList where
+  pure x = ZipList (repeat x)
+  ZipList fs <*> ZipList xs = ZipList (zipWith (\f x -> f x) fs xs)
+{-
+<*> does just what we said. It applies the first function to the first value,
+the second function to the second value, etc. This is done with zipWith (\f x -> f x) fs xs.
+Because of how zipWith works, the resulting list will be as long as the shorter of the two lists.
+-}
 
+
+-- | ---------------------------------------------------------
+
+fmap (\x -> [x]) (Just 4)
+-- | Just [4]
+
+-- | we have Just 3 and Just [4]. How do we get Just [3,4]
+-- | use liftA2
+liftA2 :: (Applicative f) => (a -> b -> c) -> f a -> f b -> f c
+liftA2 f a b = f <$> a <*> b
+
+liftA2 (:) (Just 3) (Just [4])
+-- | Just [3, 4]
+
+-- | implementing a function that takes a list of applicatives and returns an applicative that has a list as its result value
+sequenceA :: (Applicative f) => [f a] -> f [a]
+sequenceA [] = pure []
+sequenceA (x:xs) = (:) <$> x <*> sequenceA xs
+
+-- | Another way to implement sequenceA is with a fold
+sequenceA' :: (Applicative f) => [f a] -> f [a]
+sequenceA' = foldr (liftA2 (:)) (pure [])
